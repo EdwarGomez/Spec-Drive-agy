@@ -8,6 +8,16 @@
 
 **Input**: User description: "Sistema de reservas de canchas de pádel con autenticación de usuarios, catálogo cerrado de 5 canchas en Medellín, visualización de grilla de 24 horas en bloques de 1 hora, prevención crítica de colisiones (double-booking), límite de una reserva activa por usuario y gestión de reservas personales (historial y cancelación)."
 
+## Clarifications
+
+### Session 2026-10-17
+
+- Q: ¿Con cuánta anticipación mínima debe un usuario cancelar su reserva para que sea permitida? (FR-013) → A: Con al menos 1 hora de anticipación antes del inicio del turno (Opción B).
+- Q: ¿Exactamente en qué momento una reserva deja de contarse como "activa" para permitir que el usuario agende un nuevo turno? (FR-010) → A: Al finalizar el turno de 1 hora (`hora_fin <= hora_actual`) (Opción A).
+- Q: ¿Con cuántos días de anticipación como máximo puede un usuario consultar y reservar una cancha en el calendario? (FR-005) → A: Sin límite de anticipación (cualquier fecha futura es válida) (Opción A).
+- Q: ¿Cómo deben visualizarse las reservas que fueron canceladas por el usuario dentro del panel "Mis Reservas"? (FR-011) → A: Se ocultan del panel tras cancelarse (solo se listan reservas futuras activas y pasadas completadas) (Opción A).
+- Q: ¿Qué datos se deben solicitar y validar en el formulario de registro de nuevos usuarios? (FR-001) → A: Nombre completo, correo electrónico válido y contraseña (mínimo 8 caracteres) (Opción A).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Exploración y Reserva con Prevención de Colisión (Priority: P1)
@@ -28,7 +38,7 @@ Como jugador registrado con sesión activa, quiero seleccionar una cancha del ca
 
 ### User Story 2 - Autenticación y Control de Acceso (Priority: P1)
 
-Como nuevo usuario o usuario existente, quiero registrarme e iniciar sesión con mi correo electrónico y contraseña para acceder a la disponibilidad completa de las canchas y realizar reservas.
+Como nuevo usuario o usuario existente, quiero registrarme (con nombre completo, correo electrónico y contraseña) e iniciar sesión (con correo electrónico y contraseña) para acceder a la disponibilidad completa de las canchas y realizar reservas.
 
 **Why this priority**: Es un principio constitucional del sistema. Nadie puede ver la disponibilidad completa ni agendar reservas sin estar debidamente identificado.
 
@@ -36,7 +46,7 @@ Como nuevo usuario o usuario existente, quiero registrarme e iniciar sesión con
 
 **Acceptance Scenarios**:
 
-1. **Given** un visitante no autenticado, **When** proporciona un correo válido y una contraseña para registrarse, **Then** el sistema crea la cuenta, inicia su sesión y le permite acceder a la grilla de canchas.
+1. **Given** un visitante no autenticado, **When** proporciona su nombre completo, un correo electrónico válido y una contraseña de mínimo 8 caracteres para registrarse, **Then** el sistema crea la cuenta, inicia su sesión y le permite acceder a la grilla de canchas.
 2. **Given** un usuario con sesión activa, **When** consulta las canchas, **Then** puede ver la disponibilidad completa y sus reservas asociadas.
 3. **Given** un usuario autenticado, **When** intenta consultar o cancelar reservas que pertenecen a otro usuario, **Then** el sistema prohíbe el acceso y solo expone sus propios datos.
 
@@ -52,8 +62,8 @@ Como administrador del club, quiero que cada usuario pueda tener únicamente una
 
 **Acceptance Scenarios**:
 
-1. **Given** un usuario que ya cuenta con una reserva futura activa, **When** intenta confirmar una nueva reserva en cualquier cancha, **Then** el sistema rechaza la solicitud y muestra un mensaje indicando que debe completar o cancelar su reserva previa antes de reservar de nuevo.
-2. **Given** un usuario cuya reserva previa ya culminó en el tiempo (pasó al historial de pasadas), **When** solicita una nueva reserva, **Then** el sistema le permite reservar normalmente.
+1. **Given** un usuario que ya cuenta con una reserva futura o en curso activa, **When** intenta confirmar una nueva reserva en cualquier cancha, **Then** el sistema rechaza la solicitud y muestra un mensaje indicando que debe completar o cancelar su reserva previa antes de reservar de nuevo.
+2. **Given** un usuario cuya reserva previa ya culminó en el tiempo (`hora_fin <= hora_actual`, pasando al historial de pasadas), **When** solicita una nueva reserva, **Then** el sistema le permite reservar normalmente.
 
 ---
 
@@ -63,13 +73,13 @@ Como usuario que ha realizado una reserva, quiero revisar en un panel personal m
 
 **Why this priority**: Brinda autonomía al usuario para controlar sus compromisos y permite liberar cupos para otros jugadores si hay cancelaciones.
 
-**Independent Test**: Un usuario entra a su sección "Mis Reservas", visualiza su reserva activa para las 18:00, pulsa "Cancelar", confirma la acción y el horario queda inmediatamente liberado como "Disponible" en la grilla general.
+**Independent Test**: Un usuario entra a su sección "Mis Reservas", visualiza su reserva activa para las 18:00 (faltando más de 1 hora), pulsa "Cancelar", confirma la acción y el horario queda inmediatamente liberado como "Disponible" en la grilla general.
 
 **Acceptance Scenarios**:
 
-1. **Given** un usuario autenticado en su panel "Mis Reservas", **When** consulta la sección, **Then** visualiza dos listas separadas: reservas futuras activas e historial de reservas pasadas, indicando cancha, fecha y horario.
-2. **Given** un usuario con una reserva futura en su panel, **When** selecciona cancelar y confirma la acción, **Then** la reserva queda anulada, desaparece de sus reservas activas y el bloque horario se vuelve a mostrar disponible en la grilla para otros usuarios.
-3. **Given** una reserva que ya transcurrió en el tiempo, **When** el usuario la consulta en su historial, **Then** no se muestra la opción de cancelar.
+1. **Given** un usuario autenticado en su panel "Mis Reservas", **When** consulta la sección, **Then** visualiza dos listas separadas: reservas futuras activas e historial de reservas pasadas completadas (excluyendo las reservas canceladas), indicando cancha, fecha y horario.
+2. **Given** un usuario con una reserva futura en su panel con al menos 1 hora de anticipación antes del inicio del turno, **When** selecciona cancelar y confirma la acción, **Then** la reserva queda anulada, se oculta del panel "Mis Reservas" y el bloque horario se vuelve a mostrar disponible en la grilla para otros usuarios.
+3. **Given** una reserva que ya transcurrió en el tiempo o para la cual falta menos de 1 hora antes de su inicio, **When** el usuario la consulta o intenta cancelarla, **Then** el sistema bloquea o deshabilita la cancelación e informa la restricción si aplica.
 
 ---
 
@@ -84,20 +94,20 @@ Como usuario que ha realizado una reserva, quiero revisar en un panel personal m
 
 ### Functional Requirements
 
-- **FR-001**: El sistema DEBE permitir a los usuarios registrarse e iniciar sesión utilizando correo electrónico y contraseña.
+- **FR-001**: El sistema DEBE permitir a los usuarios registrarse proporcionando nombre completo, correo electrónico válido y contraseña (mínimo 8 caracteres), e iniciar sesión utilizando su correo electrónico y contraseña.
 - **FR-002**: El sistema DEBE restringir la visualización de la disponibilidad completa y la creación de reservas exclusivamente a usuarios con sesión activa.
 - **FR-003**: El sistema DEBE restringir el acceso a la gestión de reservas para que cada usuario solo pueda visualizar y cancelar sus propias reservas.
 - **FR-004**: El sistema DEBE exponer un catálogo cerrado e inmutable compuesto exactamente por 5 canchas: "Cancha Laureles", "Cancha El Poblado", "Cancha Belén", "Cancha Robledo" y "Cancha Envigado".
-- **FR-005**: El sistema DEBE permitir seleccionar una fecha en un calendario interactivo para consultar la disponibilidad de la cancha elegida.
+- **FR-005**: El sistema DEBE permitir seleccionar cualquier fecha actual o futura (sin límite máximo de días de anticipación) en un calendario interactivo para consultar la disponibilidad y reservar la cancha elegida.
 - **FR-006**: El sistema DEBE mostrar una grilla de horarios en formato estricto de 24 horas dividida en bloques enteros de 1 hora (ej. de 14:00 a 15:00).
 - **FR-007**: El sistema DEBE señalar claramente el estado de cada bloque horario como "Disponible" o "Reservado".
 - **FR-008**: El sistema DEBE impedir la selección o confirmación de reservas en fechas y horas que pertenezcan al pasado.
 - **FR-009 (CRÍTICO - Prevención de Colisiones)**: El sistema DEBE re-validar que el bloque horario continúe libre inmediatamente antes de asentar la reserva; si el bloque fue tomado por otro usuario, la transacción DEBE rechazarse con un mensaje explicativo y sin inconsistencias de datos.
-- **FR-010**: El sistema DEBE impedir que un usuario confirme una reserva si ya cuenta con una reserva activa futura (regla de máximo 1 reserva activa por usuario).
-- **FR-011**: El sistema DEBE proveer un panel "Mis Reservas" con la separación de reservas futuras activas e historial de reservas pasadas.
+- **FR-010**: El sistema DEBE impedir que un usuario confirme una reserva si ya cuenta con una reserva activa vigente, considerándose activa hasta que finalice el bloque de 1 hora (`hora_fin > hora_actual`) y no haya sido cancelada (regla de máximo 1 reserva activa por usuario).
+- **FR-011**: El sistema DEBE proveer un panel "Mis Reservas" con la separación de reservas futuras activas e historial de reservas pasadas completadas (las reservas canceladas se ocultan de ambas listas).
 - **FR-012**: Cada registro en el panel de reservas DEBE mostrar el nombre de la cancha, la fecha y el horario reservado.
-- **FR-013**: El sistema DEBE permitir al usuario cancelar una reserva futura desde su panel, liberando de forma inmediata el bloque horario para que otros usuarios puedan reservarlo.
-- **FR-014**: El sistema NO DEBE permitir la cancelación de reservas que pertenezcan al pasado.
+- **FR-013**: El sistema DEBE permitir al usuario cancelar una reserva futura desde su panel únicamente con al menos 1 hora de anticipación antes de la hora de inicio del turno, liberando de forma inmediata el bloque horario para que otros usuarios puedan reservarlo.
+- **FR-014**: El sistema NO DEBE permitir la cancelación de reservas que pertenezcan al pasado o para las cuales falte menos de 1 hora antes de su hora de inicio.
 - **FR-015 (Non-Goals explícitos)**: El sistema NO DEBE incluir pasarelas de pago, paneles administrativos de creación de canchas, notificaciones externas por email/SMS/WhatsApp, reservas continuas multidía/multihra en un solo clic, ni módulos de emparejamiento (matchmaking).
 
 ### Key Entities *(include if feature involves data)*
@@ -105,7 +115,7 @@ Como usuario que ha realizado una reserva, quiero revisar en un panel personal m
 - **Usuario (User)**:
   - Representa al jugador registrado en la plataforma.
   - Atributos clave: Identificador único, nombre completo, correo electrónico único, credenciales seguras de acceso, fecha de registro.
-  - Relación: Puede tener asociadas múltiples reservas a lo largo del tiempo, pero máximo una en estado activa/futura.
+  - Relación: Puede tener asociadas múltiples reservas a lo largo del tiempo, pero máximo una en estado activa (`hora_fin > hora_actual`).
 
 - **Cancha (Court)**:
   - Representa uno de los 5 espacios deportivos físicos disponibles.
@@ -114,7 +124,7 @@ Como usuario que ha realizado una reserva, quiero revisar en un panel personal m
 
 - **Reserva (Booking)**:
   - Representa la asignación exclusiva de un bloque horario de 1 hora en una cancha y fecha específicas a un usuario.
-  - Atributos clave: Identificador único, usuario asociado, cancha asociada, fecha calendario, hora de inicio (formato 24h), hora de fin, estado (activa, cancelada, completada), fecha y hora de creación.
+  - Atributos clave: Identificador único, usuario asociado, cancha asociada, fecha calendario, hora de inicio (formato 24h), hora de fin, estado (activa mientras `hora_fin > hora_actual` y no cancelada; completada cuando `hora_fin <= hora_actual`; cancelada), fecha y hora de creación.
   - Relación: Vincula exactamente a un Usuario con una Cancha en un intervalo de tiempo indivisible.
 
 ## Success Criteria *(mandatory)*
