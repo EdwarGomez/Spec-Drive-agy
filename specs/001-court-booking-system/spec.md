@@ -1,6 +1,6 @@
 # Feature Specification: Court Booking System (Sistema de Reserva de Canchas)
 
-**Feature Branch**: `spec`
+**Feature Branch**: `001-court-booking-system`
 
 **Created**: 2026-10-17
 
@@ -107,7 +107,7 @@ Como usuario que ha realizado una reserva, quiero revisar en un panel personal m
 - **FR-011**: El sistema DEBE proveer un panel "Mis Reservas" con la separación de reservas futuras activas e historial de reservas pasadas completadas (las reservas canceladas se ocultan de ambas listas).
 - **FR-012**: Cada registro en el panel de reservas DEBE mostrar el nombre de la cancha, la fecha y el horario reservado.
 - **FR-013**: El sistema DEBE permitir al usuario cancelar una reserva futura desde su panel únicamente con al menos 1 hora de anticipación antes de la hora de inicio del turno, liberando de forma inmediata el bloque horario para que otros usuarios puedan reservarlo.
-- **FR-014**: El sistema NO DEBE permitir la cancelación de reservas que pertenezcan al pasado o para las cuales falte menos de 1 hora antes de su hora de inicio.
+- **FR-014 (Complemento de FR-013)**: Cuando falte menos de 1 hora antes de la hora de inicio del turno o la reserva pertenezca al pasado, el sistema DEBE deshabilitar la opción de cancelación en la interfaz y rechazar cualquier solicitud de cancelación en el servidor.
 - **FR-015 (Non-Goals explícitos)**: El sistema NO DEBE incluir pasarelas de pago, paneles administrativos de creación de canchas, notificaciones externas por email/SMS/WhatsApp, reservas continuas multidía/multihra en un solo clic, ni módulos de emparejamiento (matchmaking).
 
 ### Key Entities *(include if feature involves data)*
