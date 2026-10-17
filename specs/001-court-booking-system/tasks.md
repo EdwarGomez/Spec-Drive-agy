@@ -25,9 +25,9 @@
 
 **Purpose**: Inicialización de la estructura plana del proyecto (`/db`, `/backend`, `/frontend`) y configuración de TypeScript, Express, Vite, Tailwind CSS y Vitest.
 
-- [ ] T001 Create flat directory structure (`db/`, `backend/src/routes/`, `backend/tests/`, `frontend/src/components/`) at repository root per `plan.md`
-- [ ] T002 Initialize backend Node.js + TypeScript project with Express, `better-sqlite3`, `jsonwebtoken`, `cookie-parser`, `cors`, `vitest`, and `supertest` in `backend/package.json` and `backend/tsconfig.json`
-- [ ] T003 [P] Initialize frontend React 18 + TypeScript + Vite + Tailwind CSS project in `frontend/package.json`, `frontend/tsconfig.json`, `frontend/vite.config.ts`, `frontend/index.html`, and `frontend/src/index.css`
+- [X] T001 Create flat directory structure (`db/`, `backend/src/routes/`, `backend/tests/`, `frontend/src/components/`) at repository root per `plan.md`
+- [X] T002 Initialize backend Node.js + TypeScript project with Express, `better-sqlite3`, `jsonwebtoken`, `cookie-parser`, `cors`, `vitest`, and `supertest` in `backend/package.json` and `backend/tsconfig.json`
+- [X] T003 [P] Initialize frontend React 18 + TypeScript + Vite + Tailwind CSS project in `frontend/package.json`, `frontend/tsconfig.json`, `frontend/vite.config.ts`, `frontend/index.html`, and `frontend/src/index.css`
 
 ---
 
@@ -37,13 +37,13 @@
 
 **⚠️ CRITICAL**: Ningún trabajo de historias de usuario puede comenzar hasta completar esta fase.
 
-- [ ] T004 Create SQLite schema and idempotent seed in `db/schema.sql` with verbatim constraints: `users` (`id INTEGER PRIMARY KEY AUTOINCREMENT`, `full_name TEXT NOT NULL`, `email TEXT NOT NULL UNIQUE COLLATE NOCASE`, `password_hash TEXT NOT NULL`, `created_at TEXT NOT NULL DEFAULT (datetime('now'))`), `courts` (`id INTEGER PRIMARY KEY`, `name TEXT NOT NULL UNIQUE` seeded with `(1, 'Cancha Laureles')`, `(2, 'Cancha El Poblado')`, `(3, 'Cancha Belén')`, `(4, 'Cancha Robledo')`, `(5, 'Cancha Envigado')`), `bookings` (`id INTEGER PRIMARY KEY AUTOINCREMENT`, `user_id INTEGER NOT NULL REFERENCES users(id)`, `court_id INTEGER NOT NULL REFERENCES courts(id)`, `booking_date TEXT NOT NULL`, `start_hour INTEGER NOT NULL CHECK (start_hour >= 0 AND start_hour <= 23)`, `end_hour INTEGER NOT NULL CHECK (end_hour = start_hour + 1)`, `status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'CANCELLED'))`, `created_at TEXT NOT NULL DEFAULT (datetime('now'))`), and indexes `idx_bookings_active_slot ON bookings (court_id, booking_date, start_hour) WHERE status = 'ACTIVE'` and `idx_bookings_user_status ON bookings (user_id, status, booking_date, end_hour)`
-- [ ] T005 Implement synchronous `better-sqlite3` connection and automatic `db/schema.sql` initialization targeting `db/padel.db` in `db/client.ts`
-- [ ] T006 [P] Define PascalCase domain interfaces (`User`, `Court`, `TimeSlot`, `BookingSummary`) in `backend/src/types.ts` and `frontend/src/types.ts`
-- [ ] T007 [P] Implement `America/Bogota` (UTC-5) date/time helper functions (current Bogotá date `YYYY-MM-DD`, current hour/timestamp, past-slot check, active-booking end comparison `hora_fin > hora_actual`, and `>= 3600 seconds` cancellation window check) in `backend/src/time.ts`
-- [ ] T008 [P] Implement password hashing (`node:crypto` `scrypt`), JWT signing/verification (`jsonwebtoken`), and `requireAuth` middleware returning `401 Unauthorized` (`{ "error": "Debes iniciar sesión para acceder a las reservas." }`) in `backend/src/auth.ts`
-- [ ] T009 Setup Express application with CORS, `cookie-parser`, JSON body parsing, route mounting (`/api/auth`, `/api/courts`, `/api/bookings`), and friendly semantic error handler (never exposing raw SQLite errors or stack traces) in `backend/src/app.ts` and `backend/src/index.ts`
-- [ ] T010 [P] Implement base HTTP fetch wrapper with credentials/token support and friendly Spanish error translation in `frontend/src/api.ts` and bootstrap React root in `frontend/src/main.tsx`
+- [X] T004 Create SQLite schema and idempotent seed in `db/schema.sql` with verbatim constraints: `users` (`id INTEGER PRIMARY KEY AUTOINCREMENT`, `full_name TEXT NOT NULL`, `email TEXT NOT NULL UNIQUE COLLATE NOCASE`, `password_hash TEXT NOT NULL`, `created_at TEXT NOT NULL DEFAULT (datetime('now'))`), `courts` (`id INTEGER PRIMARY KEY`, `name TEXT NOT NULL UNIQUE` seeded with `(1, 'Cancha Laureles')`, `(2, 'Cancha El Poblado')`, `(3, 'Cancha Belén')`, `(4, 'Cancha Robledo')`, `(5, 'Cancha Envigado')`), `bookings` (`id INTEGER PRIMARY KEY AUTOINCREMENT`, `user_id INTEGER NOT NULL REFERENCES users(id)`, `court_id INTEGER NOT NULL REFERENCES courts(id)`, `booking_date TEXT NOT NULL`, `start_hour INTEGER NOT NULL CHECK (start_hour >= 0 AND start_hour <= 23)`, `end_hour INTEGER NOT NULL CHECK (end_hour = start_hour + 1)`, `status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'CANCELLED'))`, `created_at TEXT NOT NULL DEFAULT (datetime('now'))`), and indexes `idx_bookings_active_slot ON bookings (court_id, booking_date, start_hour) WHERE status = 'ACTIVE'` and `idx_bookings_user_status ON bookings (user_id, status, booking_date, end_hour)`
+- [X] T005 Implement synchronous `better-sqlite3` connection and automatic `db/schema.sql` initialization targeting `db/padel.db` in `db/client.ts`
+- [X] T006 [P] Define PascalCase domain interfaces (`User`, `Court`, `TimeSlot`, `BookingSummary`) in `backend/src/types.ts` and `frontend/src/types.ts`
+- [X] T007 [P] Implement `America/Bogota` (UTC-5) date/time helper functions (current Bogotá date `YYYY-MM-DD`, current hour/timestamp, past-slot check, active-booking end comparison `hora_fin > hora_actual`, and `>= 3600 seconds` cancellation window check) in `backend/src/time.ts`
+- [X] T008 [P] Implement password hashing (`node:crypto` `scrypt`), JWT signing/verification (`jsonwebtoken`), and `requireAuth` middleware returning `401 Unauthorized` (`{ "error": "Debes iniciar sesión para acceder a las reservas." }`) in `backend/src/auth.ts`
+- [X] T009 Setup Express application with CORS, `cookie-parser`, JSON body parsing, route mounting (`/api/auth`, `/api/courts`, `/api/bookings`), and friendly semantic error handler (never exposing raw SQLite errors or stack traces) in `backend/src/app.ts` and `backend/src/index.ts`
+- [X] T010 [P] Implement base HTTP fetch wrapper with credentials/token support and friendly Spanish error translation in `frontend/src/api.ts` and bootstrap React root in `frontend/src/main.tsx`
 
 **Checkpoint**: Base de datos `padel.db`, utilidades de tiempo `America/Bogota`, middleware de autenticación y servidor Express listos para conectar las historias de usuario.
 
@@ -57,11 +57,11 @@
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Implement `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`, and `GET /api/auth/me` in `backend/src/routes/authRoutes.ts` enforcing `data-model.md` constraints verbatim (`full_name`: required, non-empty after `trim()`, min 2 chars; `email`: `UNIQUE COLLATE NOCASE` normalized to lowercase matching `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`; `password`: min 8 chars before hashing; returning `400 Bad Request` on invalid fields, `409 Conflict` on duplicate email, and `401 Unauthorized` on bad credentials)
-- [ ] T012 [P] [US2] Add authentication client functions (`registerUser`, `loginUser`, `logoutUser`, `getCurrentUser`) to `frontend/src/api.ts`
-- [ ] T013 [P] [US2] Implement `AuthForm` functional component supporting login and registration modes with client-side validation (`fullName` >= 2 chars, valid `email`, `password` >= 8 chars) and friendly error feedback in `frontend/src/components/AuthForm.tsx`
-- [ ] T014 [P] [US2] Implement `Navbar` functional component displaying authenticated user's `fullName`, navigation tabs (`"Disponibilidad de Canchas"` and `"Mis Reservas"`), and logout button in `frontend/src/components/Navbar.tsx`
-- [ ] T015 [US2] Implement session check on startup (`getCurrentUser`), unauthenticated redirection/gating to `AuthForm`, and 401 session-expiration handling in `frontend/src/App.tsx`
+- [X] T011 [US2] Implement `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`, and `GET /api/auth/me` in `backend/src/routes/authRoutes.ts` enforcing `data-model.md` constraints verbatim (`full_name`: required, non-empty after `trim()`, min 2 chars; `email`: `UNIQUE COLLATE NOCASE` normalized to lowercase matching `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`; `password`: min 8 chars before hashing; returning `400 Bad Request` on invalid fields, `409 Conflict` on duplicate email, and `401 Unauthorized` on bad credentials)
+- [X] T012 [P] [US2] Add authentication client functions (`registerUser`, `loginUser`, `logoutUser`, `getCurrentUser`) to `frontend/src/api.ts`
+- [X] T013 [P] [US2] Implement `AuthForm` functional component supporting login and registration modes with client-side validation (`fullName` >= 2 chars, valid `email`, `password` >= 8 chars) and friendly error feedback in `frontend/src/components/AuthForm.tsx`
+- [X] T014 [P] [US2] Implement `Navbar` functional component displaying authenticated user's `fullName`, navigation tabs (`"Disponibilidad de Canchas"` and `"Mis Reservas"`), and logout button in `frontend/src/components/Navbar.tsx`
+- [X] T015 [US2] Implement session check on startup (`getCurrentUser`), unauthenticated redirection/gating to `AuthForm`, and 401 session-expiration handling in `frontend/src/App.tsx`
 
 **Checkpoint**: User Story 2 es funcional e independiente: el control de acceso obligatorio (Principio III) está activo y permite registrarse, iniciar sesión y cerrar sesión desde el navegador.
 
@@ -75,10 +75,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T016 [US1] Implement `GET /api/courts` and `GET /api/courts/:courtId/availability?date=YYYY-MM-DD` (validating `courtId` in `1..5`, rejecting past dates with `400 Bad Request`, and returning the 24 hourly `TimeSlot` items in 24h format `"00:00 - 01:00"` to `"23:00 - 24:00"` with `status: 'AVAILABLE' | 'BOOKED'`, `isPast`, and `bookedByCurrentUser`) in `backend/src/routes/courtRoutes.ts`
-- [ ] T017 [US1] Implement `POST /api/bookings` using `db.transaction(...).immediate()` to validate `courtId` (`1..5`), `bookingDate` (`YYYY-MM-DD`), `startHour` (`0..23`), `end_hour = start_hour + 1` (`1..24`), reject past slots with `400 Bad Request` (`PAST_TIME_SLOT`), verify slot availability against `idx_bookings_active_slot` (`WHERE status = 'ACTIVE'`) returning `409 Conflict` (`SLOT_ALREADY_BOOKED`) on collision, and insert the active booking in `backend/src/routes/bookingRoutes.ts`
-- [ ] T018 [P] [US1] Add court catalog, availability fetch, and booking creation methods (`getCourts`, `getCourtAvailability`, `createBooking`) to `frontend/src/api.ts`
-- [ ] T019 [US1] Implement `CourtGrid` functional component with selector for the 5 immutable courts, interactive date picker without future limit (`min` set to current Bogotá date), 24-hour grid of 1-hour blocks (`00:00 - 01:00` to `23:00 - 24:00`) displaying `"Disponible"` / `"Reservado"`, blocking past slots, and handling booking confirmation and `409 Conflict` refresh in `frontend/src/components/CourtGrid.tsx`
+- [X] T016 [US1] Implement `GET /api/courts` and `GET /api/courts/:courtId/availability?date=YYYY-MM-DD` (validating `courtId` in `1..5`, rejecting past dates with `400 Bad Request`, and returning the 24 hourly `TimeSlot` items in 24h format `"00:00 - 01:00"` to `"23:00 - 24:00"` with `status: 'AVAILABLE' | 'BOOKED'`, `isPast`, and `bookedByCurrentUser`) in `backend/src/routes/courtRoutes.ts`
+- [X] T017 [US1] Implement `POST /api/bookings` using `db.transaction(...).immediate()` to validate `courtId` (`1..5`), `bookingDate` (`YYYY-MM-DD`), `startHour` (`0..23`), `end_hour = start_hour + 1` (`1..24`), reject past slots with `400 Bad Request` (`PAST_TIME_SLOT`), verify slot availability against `idx_bookings_active_slot` (`WHERE status = 'ACTIVE'`) returning `409 Conflict` (`SLOT_ALREADY_BOOKED`) on collision, and insert the active booking in `backend/src/routes/bookingRoutes.ts`
+- [X] T018 [P] [US1] Add court catalog, availability fetch, and booking creation methods (`getCourts`, `getCourtAvailability`, `createBooking`) to `frontend/src/api.ts`
+- [X] T019 [US1] Implement `CourtGrid` functional component with selector for the 5 immutable courts, interactive date picker without future limit (`min` set to current Bogotá date), 24-hour grid of 1-hour blocks (`00:00 - 01:00` to `23:00 - 24:00`) displaying `"Disponible"` / `"Reservado"`, blocking past slots, and handling booking confirmation and `409 Conflict` refresh in `frontend/src/components/CourtGrid.tsx`
 
 **Checkpoint**: User Stories 2 y 1 funcionan integradas (MVP completo): ningún usuario sin sesión puede ver la grilla ni reservar, y los usuarios autenticados exploran el catálogo cerrado de 5 canchas en grilla de 24 horas y reservan sin colisiones.
 
@@ -92,9 +92,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T020 [US3] Enforce single active booking rule inside the `POST /api/bookings` immediate transaction in `backend/src/routes/bookingRoutes.ts` by querying `bookings` via `idx_bookings_user_status` for any record with `user_id = req.user.id` and `status = 'ACTIVE'` where `(booking_date + end_hour:00) > now_bogota` and returning `409 Conflict` (`code: 'USER_ALREADY_HAS_ACTIVE_BOOKING'`)
-- [ ] T021 [US3] Compute and return accurate `userHasActiveBooking` boolean (`status = 'ACTIVE'` and `hora_fin > hora_actual` in `America/Bogota`) in `GET /api/courts/:courtId/availability` inside `backend/src/routes/courtRoutes.ts`
-- [ ] T022 [US3] Update `frontend/src/components/CourtGrid.tsx` to display an informative banner when `userHasActiveBooking` is `true` and surface the friendly `USER_ALREADY_HAS_ACTIVE_BOOKING` message if the user attempts a second active booking
+- [X] T020 [US3] Enforce single active booking rule inside the `POST /api/bookings` immediate transaction in `backend/src/routes/bookingRoutes.ts` by querying `bookings` via `idx_bookings_user_status` for any record with `user_id = req.user.id` and `status = 'ACTIVE'` where `(booking_date + end_hour:00) > now_bogota` and returning `409 Conflict` (`code: 'USER_ALREADY_HAS_ACTIVE_BOOKING'`)
+- [X] T021 [US3] Compute and return accurate `userHasActiveBooking` boolean (`status = 'ACTIVE'` and `hora_fin > hora_actual` in `America/Bogota`) in `GET /api/courts/:courtId/availability` inside `backend/src/routes/courtRoutes.ts`
+- [X] T022 [US3] Update `frontend/src/components/CourtGrid.tsx` to display an informative banner when `userHasActiveBooking` is `true` and surface the friendly `USER_ALREADY_HAS_ACTIVE_BOOKING` message if the user attempts a second active booking
 
 **Checkpoint**: La regla de máximo 1 reserva activa por usuario (`hora_fin > hora_actual`) está activa en base de datos, API e interfaz.
 
@@ -108,11 +108,11 @@
 
 ### Implementation for User Story 4
 
-- [ ] T023 [US4] Implement `GET /api/bookings/my` in `backend/src/routes/bookingRoutes.ts` filtering `WHERE user_id = ? AND status = 'ACTIVE'` (excluding `'CANCELLED'` records per FR-011), splitting results into `activeBookings` (`end_timestamp > now_bogota`) and `pastBookings` (`end_timestamp <= now_bogota`), and computing `canCancel` (`start_timestamp - now_bogota >= 3600 seconds`)
-- [ ] T024 [US4] Implement `DELETE /api/bookings/:bookingId` in `backend/src/routes/bookingRoutes.ts` verifying booking existence (`404 Not Found` if missing or already `'CANCELLED'`), strict ownership `booking.user_id === req.user.id` (`403 Forbidden` with `FORBIDDEN_BOOKING_ACCESS`), and minimum 1-hour advance notice `start_timestamp - now_bogota >= 3600 seconds` (`400 Bad Request` with `CANCELLATION_WINDOW_EXPIRED`), updating `status = 'CANCELLED'` to immediately free `idx_bookings_active_slot`
-- [ ] T025 [P] [US4] Add `getMyBookings` and `cancelBooking` client methods in `frontend/src/api.ts`
-- [ ] T026 [US4] Implement `MyBookings` functional component displaying two separated lists (*Reservas Futuras Activas* and *Historial de Reservas Pasadas Completadas*, excluding cancelled bookings) with court name, date, 24h time range label, and cancellation button enabled only when `canCancel` is `true` (`>= 1 hour` before start) in `frontend/src/components/MyBookings.tsx`
-- [ ] T027 [US4] Connect `"Mis Reservas"` view switching and immediate availability grid state refresh upon booking cancellation in `frontend/src/App.tsx`
+- [X] T023 [US4] Implement `GET /api/bookings/my` in `backend/src/routes/bookingRoutes.ts` filtering `WHERE user_id = ? AND status = 'ACTIVE'` (excluding `'CANCELLED'` records per FR-011), splitting results into `activeBookings` (`end_timestamp > now_bogota`) and `pastBookings` (`end_timestamp <= now_bogota`), and computing `canCancel` (`start_timestamp - now_bogota >= 3600 seconds`)
+- [X] T024 [US4] Implement `DELETE /api/bookings/:bookingId` in `backend/src/routes/bookingRoutes.ts` verifying booking existence (`404 Not Found` if missing or already `'CANCELLED'`), strict ownership `booking.user_id === req.user.id` (`403 Forbidden` with `FORBIDDEN_BOOKING_ACCESS`), and minimum 1-hour advance notice `start_timestamp - now_bogota >= 3600 seconds` (`400 Bad Request` with `CANCELLATION_WINDOW_EXPIRED`), updating `status = 'CANCELLED'` to immediately free `idx_bookings_active_slot`
+- [X] T025 [P] [US4] Add `getMyBookings` and `cancelBooking` client methods in `frontend/src/api.ts`
+- [X] T026 [US4] Implement `MyBookings` functional component displaying two separated lists (*Reservas Futuras Activas* and *Historial de Reservas Pasadas Completadas*, excluding cancelled bookings) with court name, date, 24h time range label, and cancellation button enabled only when `canCancel` is `true` (`>= 1 hour` before start) in `frontend/src/components/MyBookings.tsx`
+- [X] T027 [US4] Connect `"Mis Reservas"` view switching and immediate availability grid state refresh upon booking cancellation in `frontend/src/App.tsx`
 
 **Checkpoint**: Todas las historias de usuario (`US2`, `US1`, `US3`, `US4`) están completas y son verificables de forma independiente.
 
@@ -122,8 +122,8 @@
 
 **Purpose**: Pruebas automatizadas de integración y concurrencia, verificación de cumplimiento constitucional (cero código sombra, códigos HTTP semánticos) y validación E2E con `quickstart.md`.
 
-- [ ] T028 Implement automated integration and concurrency test suite in `backend/tests/booking.test.ts` covering: unauthenticated `401` access, registration validation & login (`US2`), 5 immutable courts & 24h availability grid (`US1`), simultaneous double-booking prevention returning `409 Conflict` `SLOT_ALREADY_BOOKED` (`US1`/`SC-001`), single active booking restriction `USER_ALREADY_HAS_ACTIVE_BOOKING` and automatic release when `hora_fin <= hora_actual` (`US3`), ownership protection `403 Forbidden`, and cancellation window `>= 1h` vs `< 1h` `CANCELLATION_WINDOW_EXPIRED` (`US4`)
-- [ ] T029 Run backend test suite (`npm --prefix backend test`) and frontend production build check (`npm --prefix frontend run build`) to verify zero TypeScript errors, zero shadow code (FR-015), and full compliance with `specs/001-court-booking-system/quickstart.md`
+- [X] T028 Implement automated integration and concurrency test suite in `backend/tests/booking.test.ts` covering: unauthenticated `401` access, registration validation & login (`US2`), 5 immutable courts & 24h availability grid (`US1`), simultaneous double-booking prevention returning `409 Conflict` `SLOT_ALREADY_BOOKED` (`US1`/`SC-001`), single active booking restriction `USER_ALREADY_HAS_ACTIVE_BOOKING` and automatic release when `hora_fin <= hora_actual` (`US3`), ownership protection `403 Forbidden`, and cancellation window `>= 1h` vs `< 1h` `CANCELLATION_WINDOW_EXPIRED` (`US4`)
+- [X] T029 Run backend test suite (`npm --prefix backend test`) and frontend production build check (`npm --prefix frontend run build`) to verify zero TypeScript errors, zero shadow code (FR-015), and full compliance with `specs/001-court-booking-system/quickstart.md`
 
 ---
 
