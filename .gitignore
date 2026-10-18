@@ -1,0 +1,33 @@
+# Node.js / TypeScript
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+build/
+**/build/
+*.log
+**/*.log
+.env*
+**/coverage/
+
+# SQLite databases & temp files
+*.db
+**/*.db
+*.db-journal
+**/*.db-journal
+*.db-wal
+**/*.db-wal
+*.db-shm
+**/*.db-shm
+
+# Backups
+*.zip
+git_history_backup/
+
+# Universal / OS / IDE
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
